@@ -35,7 +35,7 @@ public class CharacterService {
 
     public List<Character> getAllCharactersForName(String name){
         List<Character> allCharactersForName = characterRepository.findAll();
-        return allCharactersForName.stream().filter(character -> character.getName().equals(name)).sorted().collect(Collectors.toList());
+        return allCharactersForName.stream().filter(character -> character.getName().equals(name)).collect(Collectors.toList());
     }
 
 
