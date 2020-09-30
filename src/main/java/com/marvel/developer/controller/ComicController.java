@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.QueryParam;
 import java.util.List;
 
 @RestController
@@ -24,8 +25,18 @@ public class ComicController {
 
     @GetMapping("")
     @ApiOperation(value ="Fetches lists of comics.")
-    public ResponseEntity<List<Comic>> findAll(){
-        List<Comic> allComics = comicService.findAllComics();
+    public ResponseEntity<List<Comic>> findAll(@QueryParam("title") String title,
+                                               @QueryParam("start") Integer start,
+                                               @QueryParam("size") Integer size){
+
+        List<Comic> allComics;
+        if (title != null) {
+            allComics = comicService.getAllComicsForTitle(title);
+        } else {
+            allComics = comicService.findAllComics();
+        }
+        if (start != null && size != null) allComics = comicService.getAllComicsPaginated(start, size, allComics);
+
         if (allComics!=null){
             return ResponseEntity.ok(allComics);
         } else {

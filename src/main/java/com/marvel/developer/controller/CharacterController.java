@@ -26,8 +26,6 @@ public class CharacterController {
     @Autowired
     private ComicService comicService;
 
-    //#TODO когда работает пейджинатор, не работает фильтр по имени
-
     @GetMapping("")
     @ApiOperation(value = "Fetches lists of characters")
     public ResponseEntity<List<Character>> findAll(@QueryParam("name") String name,
@@ -39,7 +37,7 @@ public class CharacterController {
         } else {
             allCharacter = characterService.findAllCharacter();
         }
-        if (start !=null && size!=null) allCharacter = characterService.getAllCharactersPaginated(start, size);
+        if (start != null && size != null) allCharacter = characterService.getAllCharactersPaginated(start, size, allCharacter);
         if (null != allCharacter) {
             return ResponseEntity.ok(allCharacter);
         } else {

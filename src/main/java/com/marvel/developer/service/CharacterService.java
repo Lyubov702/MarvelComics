@@ -39,18 +39,12 @@ public class CharacterService {
     }
 
 
-    public List<Character> getAllCharactersPaginated(int start, int size){
-        List<Character> paginated = characterRepository.findAll();
+    public List<Character> getAllCharactersPaginated(int start, int size, List<Character> characters){
+        List<Character> paginated = characters;
         if(start+size>paginated.size()) return new ArrayList<Character>();
         return paginated.subList(start, start+size);
 
-
-
-
     }
-
-
-
 
     public Character save(Character character){
         return characterRepository.save(character);
