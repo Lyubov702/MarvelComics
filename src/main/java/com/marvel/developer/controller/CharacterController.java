@@ -30,20 +30,22 @@ public class CharacterController {
     @ApiOperation(value = "Fetches lists of characters")
     public ResponseEntity<List<Character>> findAll(@QueryParam("name") String name,
                                                    @QueryParam("start") Integer start,
-                                                   @QueryParam("size") Integer size) {
-        List<Character> allCharacter;
-        if (name != null) {
-            allCharacter = characterService.getAllCharactersForName(name);
-        } else {
-            allCharacter = characterService.findAllCharacter();
-        }
-        if (start != null && size != null) allCharacter = characterService.getAllCharactersPaginated(start, size, allCharacter);
+                                                   @QueryParam("size") Integer size,
+                                                   @QueryParam("sortedBy") String sortedBy) {
+
+        List<Character> allCharacter = characterService.findAllCharacter();
+        if (sortedBy != null) allCharacter = characterService.sortBy(sortedBy);
+
+        if (name != null) allCharacter = characterService.getAllCharactersForName(name, allCharacter);
+
+        if (start != null && size != null)
+            allCharacter = characterService.getAllCharactersPaginated(start, size, allCharacter);
+
         if (null != allCharacter) {
             return ResponseEntity.ok(allCharacter);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 
     @GetMapping("/{characterId}")
@@ -55,14 +57,6 @@ public class CharacterController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    @GetMapping("/comic/{id}")
-    @ApiOperation(value = "  Список героев по ид комикса")
-    public ResponseEntity<List<Character>> findByComic(@RequestParam int id) {
-        List<Character> result = characterService.findByComicId(id);
-        return result != null ? ResponseEntity.ok(result) :
-                new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
 

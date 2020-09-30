@@ -3,6 +3,7 @@ package com.marvel.developer.service;
 import com.marvel.developer.model.Character;
 import com.marvel.developer.model.Comic;
 import com.marvel.developer.repository.ComicRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,8 +35,8 @@ public class ComicService {
         return comics;
     }
 
-    public List<Comic> getAllComicsForTitle(String title) {
-        List<Comic> allComicsForTitle = comicRepository.findAll();
+    public List<Comic> getAllComicsForTitle(String title, List<Comic> comics) {
+        List<Comic> allComicsForTitle = comics;
         return allComicsForTitle.stream().filter(comic -> comic.getTitle().equals(title)).collect(Collectors.toList());
     }
 
@@ -49,5 +50,10 @@ public class ComicService {
 
     public Comic save(Comic comic) {
         return comicRepository.save(comic);
+    }
+
+    public List<Comic> sortBy(String sortedBy) {
+        Sort sortOrder = Sort.by(sortedBy);
+        return comicRepository.findAll(sortOrder);
     }
 }

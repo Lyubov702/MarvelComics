@@ -24,20 +24,20 @@ public class ComicController {
     private CharacterService characterService;
 
     @GetMapping("")
-    @ApiOperation(value ="Fetches lists of comics.")
+    @ApiOperation(value = "Fetches lists of comics.")
     public ResponseEntity<List<Comic>> findAll(@QueryParam("title") String title,
                                                @QueryParam("start") Integer start,
-                                               @QueryParam("size") Integer size){
+                                               @QueryParam("size") Integer size,
+                                               @QueryParam("sortedBy") String sortedBy) {
 
-        List<Comic> allComics;
-        if (title != null) {
-            allComics = comicService.getAllComicsForTitle(title);
-        } else {
-            allComics = comicService.findAllComics();
-        }
+        List<Comic> allComics = comicService.findAllComics();
+        if (sortedBy != null) allComics = comicService.sortBy(sortedBy);
+
+        if (title != null) allComics = comicService.getAllComicsForTitle(title, allComics);
+
         if (start != null && size != null) allComics = comicService.getAllComicsPaginated(start, size, allComics);
 
-        if (allComics!=null){
+        if (allComics != null) {
             return ResponseEntity.ok(allComics);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -48,7 +48,7 @@ public class ComicController {
     @ApiOperation(value = "Fetches a single comic by id.")
     public ResponseEntity<ComicResult> findById(@RequestParam int id) {
         Comic comic = comicService.findById(id);
-        if(comic!=null){
+        if (comic != null) {
             List<Character> characters = characterService.findByComicId(comic.getId());
             return ResponseEntity.ok(new ComicResult(comic, characters));
         } else {
@@ -66,13 +66,11 @@ public class ComicController {
     }
 
 
-
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiOperation(value = "Save new comics.")
-    public void saveComic( @RequestBody Comic comic){
+    public void saveComic(@RequestBody Comic comic) {
         comicService.save(comic);
     }
-
 
 }

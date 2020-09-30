@@ -19,8 +19,8 @@ public interface CharacterRepository extends JpaRepository<Character, Integer> {
     @Query(value = "SELECT character.id, character.name, character.description," +
             " character.modified" +
             " FROM character" +
-            " JOIN character_comics on character_comics.character_id = character.id" +
-            " where character_comics.comics_id=:id " +
+            " JOIN comic_characters on comic_characters.characters_id = character.id" +
+            " where comic_characters.comic_id=:id " +
             ";", nativeQuery = true)
     List<Character> findByComicId(@Param("id") int id);
 }

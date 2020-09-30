@@ -2,6 +2,7 @@ package com.marvel.developer.service;
 
 import com.marvel.developer.model.Character;
 import com.marvel.developer.repository.CharacterRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,8 +34,8 @@ public class CharacterService {
         return optionalCharacter;
     }
 
-    public List<Character> getAllCharactersForName(String name){
-        List<Character> allCharactersForName = characterRepository.findAll();
+    public List<Character> getAllCharactersForName(String name, List<Character> characterList){
+        List<Character> allCharactersForName = characterList;
         return allCharactersForName.stream().filter(character -> character.getName().equals(name)).collect(Collectors.toList());
     }
 
@@ -50,4 +51,8 @@ public class CharacterService {
         return characterRepository.save(character);
     }
 
+    public List<Character> sortBy(String sortBy) {
+        Sort sortOrder = Sort.by(sortBy);
+        return characterRepository.findAll(sortOrder);
+    }
 }
