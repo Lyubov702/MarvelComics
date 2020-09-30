@@ -10,12 +10,6 @@ import java.util.List;
 
 public interface CharacterRepository extends JpaRepository<Character, Integer> {
 
-/*    @Query(value = "SELECT character.id, character.name, character.description, character.modified, comic.comics_id" +
-            "FROM character_comics " +
-            " JOIN character ON character.id=character_comics.character_id " +
-            " JOIN comic  ON comic.id=character_comics.comics_id;", nativeQuery = true)*/
-    List<Character> findAll();
-
     @Query(value = "SELECT character.id, character.name, character.description," +
             " character.modified" +
             " FROM character" +

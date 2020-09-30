@@ -6,6 +6,7 @@ import com.marvel.developer.model.Comic;
 import com.marvel.developer.model.ComicResult;
 import com.marvel.developer.service.CharacterService;
 import com.marvel.developer.service.ComicService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comics")
+@Api(value = "comics_resources", description = "CRUD comics")
 public class ComicController {
 
     @Autowired

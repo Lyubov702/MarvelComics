@@ -9,17 +9,27 @@ import com.marvel.developer.service.ComicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.QueryParam;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
 @RequestMapping("/characters")
-@Api(value = "character_resources", description = "CRUD ")
+@Api(value = "character_resources", description = "CRUD character")
 public class CharacterController {
 
     @Autowired
@@ -72,14 +82,25 @@ public class CharacterController {
     }
 
 
- /*   @GetMapping("/images")
-    public void showImage(@RequestParam("id") Integer id, HttpServletResponse response) throws IOException {
-        response.setContentType("image/png");
-        Character character = characterService.findById(id);
+    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public void getImage(HttpServletResponse response) throws IOException {
+        ClassPathResource imgFile = new ClassPathResource("/img/img.png");
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
+    }
 
-        InputStream is = new ByteArrayInputStream(character.getLogo());
-        IOUtils.copy(is, response.getOutputStream());
-    }*/
+
+    @PostMapping("/uploadImage")
+    public void singleFileUpload(@RequestParam("file") MultipartFile file) {
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("D://img/" + file.getOriginalFilename());
+            Files.write(path, bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseStatus(code = HttpStatus.CREATED)
