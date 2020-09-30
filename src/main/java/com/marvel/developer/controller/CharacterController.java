@@ -1,6 +1,7 @@
 package com.marvel.developer.controller;
 
 
+import com.marvel.developer.exceptions.NotFoundException;
 import com.marvel.developer.model.Character;
 import com.marvel.developer.model.Comic;
 import com.marvel.developer.service.CharacterService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.ws.rs.QueryParam;
 import java.util.List;
 
@@ -48,14 +50,14 @@ public class CharacterController {
         }
     }
 
-    @GetMapping("/{characterId}")
+    @GetMapping("/{id}")
     @ApiOperation(value = "Fetches a single character by id.")
     public ResponseEntity<Character> findById(@RequestParam int id) {
         Character character = characterService.findById(id);
         if (character != null) {
             return ResponseEntity.ok(character);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException();
         }
     }
 
@@ -64,8 +66,9 @@ public class CharacterController {
     @ApiOperation(value = "Fetches lists of comics filtered by a character id.")
     public ResponseEntity<List<Comic>> findComicsByCharacterId(@RequestParam int id) {
         List<Comic> result = comicService.findByCharacterId(id);
-        return result != null ? ResponseEntity.ok(result) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (result != null)
+           return ResponseEntity.ok(result);
+        else throw new NotFoundException();
     }
 
 
@@ -81,7 +84,7 @@ public class CharacterController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiOperation(value = "Save new character.")
-    public void saveCharacter(@RequestBody Character character) {
+    public void saveCharacter(@RequestBody @Valid Character character) {
         characterService.save(character);
     }
 }
