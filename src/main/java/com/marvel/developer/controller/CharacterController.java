@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -82,15 +81,23 @@ public class CharacterController {
     }
 
 
-    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @ApiOperation(value = "Save new character.")
+    public void saveCharacter(@RequestBody @Valid Character character) {
+        characterService.save(character);
+    }
+
+
+    @GetMapping(value = "/", produces = MediaType.IMAGE_JPEG_VALUE)
     public void getImage(HttpServletResponse response) throws IOException {
-        ClassPathResource imgFile = new ClassPathResource("/img/img.png");
+        ClassPathResource imgFile = new ClassPathResource("/img/character_id=1.png");
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
     }
 
 
-    @PostMapping("/uploadImage")
+    @PostMapping("/upload")
     public void singleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
             byte[] bytes = file.getBytes();
@@ -102,10 +109,6 @@ public class CharacterController {
         }
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    @ResponseStatus(code = HttpStatus.CREATED)
-    @ApiOperation(value = "Save new character.")
-    public void saveCharacter(@RequestBody @Valid Character character) {
-        characterService.save(character);
-    }
+
+
 }

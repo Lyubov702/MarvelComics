@@ -1,6 +1,5 @@
 package com.marvel.developer.service;
 
-import com.marvel.developer.model.Character;
 import com.marvel.developer.model.Comic;
 import com.marvel.developer.repository.ComicRepository;
 import org.springframework.data.domain.Sort;

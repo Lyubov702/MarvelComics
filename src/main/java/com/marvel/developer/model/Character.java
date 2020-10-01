@@ -19,21 +19,13 @@ public class Character {
     private String description;
     private Date modified;
 
-/* #TODO add image
-    @Lob
-    @Column(name = "logo", nullable = false)
-    private byte[] logo;
-    #TODO
-   */
-
     public Character() {
     }
 
-    public Character( String name, String description, Date modified, byte[] logo) {
+    public Character(String name, String description, Date modified) {
         this.name = name;
         this.description = description;
         this.modified = modified;
-        // this.logo = logo;
     }
 
     public int getId() {
@@ -67,12 +59,4 @@ public class Character {
     public void setModified(Date modified) {
         this.modified = modified;
     }
-
-/*    public byte[] getLogo() {
-        return logo;
-    }
-
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
-    }*/
 }

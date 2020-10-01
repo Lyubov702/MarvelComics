@@ -29,7 +29,7 @@ public class SwaggerConfig {
                 .title("MARVEL REST API")
                 .description("REST API")
                 .version("1.0")
-                .contact(new Contact("Lyubov Zakharova", "http://lyubov.ru", "l.a.zakharowa@gmail.com"))
+                .contact(new Contact("Lyubov Zakharova", "https://vk.com/lyubov__4", "l.a.zakharowa@gmail.com"))
                 .build();
     }
 
