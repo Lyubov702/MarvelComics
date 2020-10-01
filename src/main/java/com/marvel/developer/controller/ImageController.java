@@ -1,7 +1,11 @@
 package com.marvel.developer.controller;
 
-import com.marvel.developer.model.ImageModel;
+import com.marvel.developer.exceptions.NotFoundException;
+import com.marvel.developer.model.Image;
 import com.marvel.developer.repository.ImageRepository;
+import com.marvel.developer.service.ImageService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,36 +21,33 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 
-
 @RestController
 @RequestMapping(path = "image")
-public class ImageUploadController {
+@Api(value = "image_resources")
+public class ImageController {
 
     @Autowired
-    ImageRepository imageRepository;
+    ImageService imageService;
 
     @PostMapping("/upload")
-    public BodyBuilder uplaodImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
-
-        System.out.println("Original Image Byte Size - " + file.getBytes().length);
-        ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(),
+    @ApiOperation(value = "upload image.")
+    public BodyBuilder uploadImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
+        Image img = new Image(file.getOriginalFilename(), file.getContentType(),
                 compressBytes(file.getBytes()));
-        imageRepository.save(img);
-
-
+        imageService.save(img);
         return ResponseEntity.status(HttpStatus.OK);
     }
 
-    @GetMapping(path = { "/get/{imageName}" })
-    public ImageModel getImage(@PathVariable("imageName") String imageName) throws IOException {
+    @GetMapping(path = {"/get/{imageName}"})
+    @ApiOperation(value = "Get image for name.")
+    public Image getImage(@PathVariable("imageName") String imageName) throws IOException {
 
-        final Optional<ImageModel> retrievedImage = imageRepository.findByName(imageName);
-        ImageModel img = new ImageModel(retrievedImage.get().getName(), retrievedImage.get().getType(),
+        final Optional<Image> retrievedImage = imageService.findByName(imageName);
+        Image img = new Image(retrievedImage.get().getName(), retrievedImage.get().getType(),
                 decompressBytes(retrievedImage.get().getPicByte()));
         return img;
     }
 
-    // compress the image bytes before storing it in the database
     public static byte[] compressBytes(byte[] data) {
         Deflater deflater = new Deflater();
         deflater.setInput(data);
@@ -60,14 +61,12 @@ public class ImageUploadController {
         }
         try {
             outputStream.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
-        System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
 
         return outputStream.toByteArray();
     }
 
-    // uncompress the image bytes before returning it to the angular application
     public static byte[] decompressBytes(byte[] data) {
         Inflater inflater = new Inflater();
         inflater.setInput(data);
@@ -79,8 +78,7 @@ public class ImageUploadController {
                 outputStream.write(buffer, 0, count);
             }
             outputStream.close();
-        } catch (IOException ioe) {
-        } catch (DataFormatException e) {
+        } catch (IOException | DataFormatException ignored) {
         }
         return outputStream.toByteArray();
     }
