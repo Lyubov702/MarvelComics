@@ -9,21 +9,21 @@ public class Image {
         super();
     }
 
-    public Image(String name, String type, byte[] picByte) {
+    public Image(String name, String type, byte[] data) {
         this.name = name;
         this.type = type;
-        this.picByte = picByte;
+        this.data = data;
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
 
     private String type;
 
-    private byte[] picByte;
+    private byte[] data;
 
     public String getName() {
         return name;
@@ -41,11 +41,19 @@ public class Image {
         this.type = type;
     }
 
-    public byte[] getPicByte() {
-        return picByte;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setPicByte(byte[] picByte) {
-        this.picByte = picByte;
+    public void setData(byte[] picByte) {
+        this.data = picByte;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

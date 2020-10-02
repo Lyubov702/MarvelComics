@@ -3,7 +3,6 @@ package com.marvel.developer.controller;
 import com.marvel.developer.exceptions.NotFoundException;
 import com.marvel.developer.model.Character;
 import com.marvel.developer.model.Comic;
-import com.marvel.developer.model.ComicResult;
 import com.marvel.developer.service.CharacterService;
 import com.marvel.developer.service.ComicService;
 import io.swagger.annotations.Api;
@@ -50,11 +49,10 @@ public class ComicController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Fetches a single comic by id.")
-    public ResponseEntity<ComicResult> findById(@RequestParam int id) {
+    public ResponseEntity<Comic> findById(@RequestParam int id) {
         Comic comic = comicService.findById(id);
         if (comic != null) {
-            List<Character> characters = characterService.findByComicId(comic.getId());
-            return ResponseEntity.ok(new ComicResult(comic, characters));
+            return ResponseEntity.ok(comic);
         } else {
             throw new NotFoundException();
         }
